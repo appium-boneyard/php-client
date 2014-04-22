@@ -9,12 +9,6 @@ require_once('PHPUnit/Extensions/AppiumTestCase.php');
 
 class AccessorTests extends PHPUnit_Extensions_AppiumTestCase
 {
-    protected function setUp()
-    {
-        $this->setBrowser('firefox');
-        $this->setBrowserUrl('http://www.example.com/');
-    }
-
     public function testFindElementByIOSAutomation()
     {
         $el = $this->byIOSUIAutomation('.elements()[0]');

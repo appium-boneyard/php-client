@@ -35,6 +35,11 @@ abstract class PHPUnit_Extensions_AppiumTestCase extends PHPUnit_Extensions_Sele
 
         // Make sure we are using the Appium session
         self::setUpSessionStrategy(array("sessionStrategy" => "isolated"));
+
+        // Appium doesn't use the browser per se, but the system fails
+        // if it is not set
+        self::setBrowser("");
+        self::setBrowserUrl("");
     }
 
     private static function defaultSessionStrategy()

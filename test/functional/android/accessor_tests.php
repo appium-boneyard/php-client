@@ -9,12 +9,6 @@ require_once('PHPUnit/Extensions/AppiumTestCase.php');
 
 class ContextTests extends PHPUnit_Extensions_AppiumTestCase
 {
-    protected function setUp()
-    {
-        $this->setBrowser('firefox');
-        $this->setBrowserUrl('http://www.example.com/');
-    }
-
     public function testFindByAndroidUIAutomator()
     {
         $el = $this->byAndroidUIAutomator('new UiSelector().description("Animation")');
