@@ -14,12 +14,34 @@
  * limitations under the License.
  **/
 
+require_once('PHPUnit/Extensions/AppiumTestCase/SessionCommand/Context.php');
+
 class PHPUnit_Extensions_AppiumTestCase_Session
     extends PHPUnit_Extensions_Selenium2TestCase_Session
 {
-    public function currentContext()
+    /**
+     * @var string  the base URL for this session,
+     *              which all relative URLs will refer to
+     */
+    private $baseUrl;
+
+    public function __construct($driver,
+                                PHPUnit_Extensions_Selenium2TestCase_URL $url,
+                                PHPUnit_Extensions_Selenium2TestCase_URL $baseUrl,
+                                PHPUnit_Extensions_Selenium2TestCase_Session_Timeouts $timeouts)
     {
-        $url = $this->url->descend('window')->descend(trim($this->windowHandle(), '{}'));
-        return new PHPUnit_Extensions_AppiumTestCase_Context($this->driver, $url);
+        $this->baseUrl = $baseUrl;
+        parent::__construct($driver, $url, $baseUrl, $timeouts);
+    }
+
+    protected function initCommands()
+    {
+        $baseUrl = $this->baseUrl;
+        $commands = parent::initCommands();
+
+        $commands['contexts'] = 'PHPUnit_Extensions_Selenium2TestCase_SessionCommand_GenericAccessor';
+        $commands['context'] = 'PHPUnit_Extensions_AppiumTestCase_SessionCommand_Context';
+
+        return $commands;
     }
 }
