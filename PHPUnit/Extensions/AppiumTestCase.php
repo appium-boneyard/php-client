@@ -83,4 +83,38 @@ abstract class PHPUnit_Extensions_AppiumTestCase extends PHPUnit_Extensions_Sele
         self::$lastBrowserParams = $params;
         $this->localSessionStrategy = self::$browserSessionStrategy;
     }
+
+    /**
+     * @param string $value     e.g. '.elements()[0]'
+     * @return PHPUnit_Extensions_Selenium2TestCase_Element
+     */
+    public function byIOSUIAutomation($value)
+    {
+        return $this->by('-ios uiautomation', $value);
+    }
+
+    /**
+     * @param string $value     e.g. 'new UiSelector().description("Animation")'
+     * @return PHPUnit_Extensions_Selenium2TestCase_Element
+     */
+    public function byAndroidUIAutomator($value)
+    {
+        return $this->by('-android uiautomator', $value);
+    }
+
+    /**
+     * @param string $value     e.g. 'Animation'
+     * @return PHPUnit_Extensions_Selenium2TestCase_Element
+     */
+    public function byAccessibilityId($value)
+    {
+        return $this->by('accessibility id', $value);
+    }
+
+    // stolen from PHPUnit_Extensions_Selenium2TestCase_Element_Accessor
+    // where it is mysteriously private, and therefore unusable
+    private function by($strategy, $value)
+    {
+        return $this->element($this->using($strategy)->value($value));
+    }
 }
