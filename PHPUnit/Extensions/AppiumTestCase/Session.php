@@ -34,6 +34,44 @@ class PHPUnit_Extensions_AppiumTestCase_Session
         parent::__construct($driver, $url, $baseUrl, $timeouts);
     }
 
+    /**
+     * @param array   WebElement JSON object
+     * @return PHPUnit_Extensions_Selenium2TestCase_Element
+     */
+    public function elementFromResponseValue($value)
+    {
+        echo "here";
+        return PHPUnit_Extensions_Selenium2TestCase_Element::fromResponseValue($value, $this->getSessionUrl()->descend('element'), $this->driver);
+    }
+
+    public function reset()
+    {
+        $url = $this->getSessionUrl()->addCommand('appium/app/reset');
+        $this->driver->curl('POST', $url);
+    }
+
+    public function appStrings()
+    {
+        $url = $this->getSessionUrl()->addCommand('appium/app/strings');
+        return $this->driver->curl('GET', $url)->getValue();
+    }
+
+    public function keyEvent($keycode, $metastate=null)
+    {
+        $url = $this->getSessionUrl()->addCommand('appium/device/keyevent');
+        $data = array(
+            'keycode' => $keycode,
+            'metastate' => $metastate
+        );
+        $this->driver->curl('POST', $url, $data);
+    }
+
+    public function currentActivity()
+    {
+        $url = $this->getSessionUrl()->addCommand('appium/device/current_activity');
+        return $this->driver->curl('GET', $url)->getValue();
+    }
+
     protected function initCommands()
     {
         $baseUrl = $this->baseUrl;
@@ -43,5 +81,18 @@ class PHPUnit_Extensions_AppiumTestCase_Session
         $commands['context'] = 'PHPUnit_Extensions_AppiumTestCase_SessionCommand_Context';
 
         return $commands;
+    }
+
+    public function getDriver()
+    {
+        return $this->driver;
+    }
+
+    public function postCommand($name, PHPUnit_Extensions_Selenium2TestCase_ElementCriteria $criteria)
+    {
+        $response = $this->driver->curl('POST',
+                                        $this->url->addCommand($name),
+                                        $criteria->getArrayCopy());
+        return $response->getValue();
     }
 }

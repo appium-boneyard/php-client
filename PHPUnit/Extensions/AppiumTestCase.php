@@ -15,6 +15,7 @@
  **/
 
 require_once('PHPUnit/Extensions/AppiumTestCase/SessionStrategy/Isolated.php');
+require_once('PHPUnit/Extensions/AppiumTestCase/Element.php');
 
 
 abstract class PHPUnit_Extensions_AppiumTestCase extends PHPUnit_Extensions_Selenium2TestCase
@@ -28,6 +29,8 @@ abstract class PHPUnit_Extensions_AppiumTestCase extends PHPUnit_Extensions_Sele
      * @var array
      */
     private $parameters;
+
+    protected $session;
 
     public function __construct($name = NULL, array $data = array(), $dataName = '')
     {
@@ -116,10 +119,238 @@ abstract class PHPUnit_Extensions_AppiumTestCase extends PHPUnit_Extensions_Sele
         return $this->by('accessibility id', $value);
     }
 
+    public function pullFile($path)
+    {
+        $session = $this->prepareSession();
+        $data = array(
+            'path' => $path
+        );
+        $url = $this->getSessionUrl()->descend('appium')->descend('device')->descend('pull_file');
+        $response = $session->getDriver()->curl('POST', $url, $data);
+        return $response->getValue();
+    }
+
+    public function pushFile($path, $base64Data)
+    {
+        $session = $this->prepareSession();
+        $data = array(
+            'path' => $path,
+            'data' => $base64Data
+        );
+        $url = $this->getSessionUrl()->descend('appium')->descend('device')->descend('push_file');
+        $session->getDriver()->curl('POST', $url, $data);
+    }
+
+    public function backgroundApp($seconds)
+    {
+        $session = $this->prepareSession();
+        $data = array(
+            'seconds' => $seconds
+        );
+        $url = $this->getSessionUrl()->descend('appium')->descend('app')->descend('background');
+        $session->getDriver()->curl('POST', $url, $data);
+    }
+
+    public function isAppInstalled($bundleId)
+    {
+        // /appium/device/app_installed
+        $session = $this->prepareSession();
+        $data = array(
+            'bundleId' => $bundleId
+        );
+        $url = $this->getSessionUrl()->descend('appium')->descend('device')->descend('app_installed');
+        $response = $session->getDriver()->curl('POST', $url, $data);
+        return $response->getValue();
+    }
+
+    public function installApp($path)
+    {
+        $session = $this->prepareSession();
+        $data = array(
+            'appPath' => $path
+        );
+        $url = $this->getSessionUrl()->descend('appium')->descend('device')->descend('install_app');
+        $session->getDriver()->curl('POST', $url, $data);
+    }
+
+    public function removeApp($appId)
+    {
+        // /appium/device/remove_app
+        $session = $this->prepareSession();
+        $data = array(
+            'appId' => $appId
+        );
+        $url = $this->getSessionUrl()->descend('appium')->descend('device')->descend('remove_app');
+        $session->getDriver()->curl('POST', $url, $data);
+    }
+
+    public function launchApp()
+    {
+        // /appium/app/launch
+        $session = $this->prepareSession();
+        $url = $this->getSessionUrl()->descend('appium')->descend('app')->descend('launch');
+        $session->getDriver()->curl('POST', $url, null);
+    }
+
+    public function closeApp()
+    {
+        $session = $this->prepareSession();
+        $url = $this->getSessionUrl()->descend('appium')->descend('app')->descend('close');
+        $session->getDriver()->curl('POST', $url, null);
+    }
+
+    public function endTestCoverage($intent, $path)
+    {
+        $session = $this->prepareSession();
+        $data = array(
+            'intent' => $intent,
+            'path' => $path
+        );
+        $url = $this->getSessionUrl()->descend('appium')->descend('app')->descend('end_test_coverage');
+        $response = $session->getDriver()->curl('POST', $url, $data);
+        return $response->getValue();
+    }
+
+    public function lock($seconds)
+    {
+        $session = $this->prepareSession();
+        $data = array(
+            'seconds' => $seconds
+        );
+        $url = $this->getSessionUrl()->descend('appium')->descend('device')->descend('lock');
+        $session->getDriver()->curl('POST', $url, $data);
+    }
+
+    public function shake()
+    {
+        $session = $this->prepareSession();
+        $url = $this->getSessionUrl()->descend('appium')->descend('device')->descend('shake');
+        $session->getDriver()->curl('POST', $url, null);
+    }
+
+    public function hideKeyboard($keyName=null)
+    {
+        $data = array();
+        if ($keyName != null) {
+            $data['keyName'] = $keyName;
+        }
+        var_dump($data);
+        $session = $this->prepareSession();
+        $url = $this->getSessionUrl()->descend('appium')->descend('device')->descend('hide_keyboard');
+        $session->getDriver()->curl('POST', $url, $data);
+    }
+
+    public function complexFind($selector)
+    {
+        // /appium/app/complex_find
+        $session = $this->prepareSession();
+        $data = array(
+            'selector' => $selector
+        );
+        $url = $this->getSessionUrl()->descend('appium')->descend('app')->descend('complex_find');
+        $response = $session->getDriver()->curl('POST', $url, $data);
+        return PHPUnit_Extensions_AppiumTestCase_Element::fromResponseValue($response->getValue(),
+            $session->getSessionUrl()->descend('element'), $session->getDriver());
+    }
+
     // stolen from PHPUnit_Extensions_Selenium2TestCase_Element_Accessor
     // where it is mysteriously private, and therefore unusable
-    private function by($strategy, $value)
+    public function by($strategy, $value)
     {
-        return $this->element($this->using($strategy)->value($value));
+        $el = $this->element($this->using($strategy)->value($value));
+        return $el;
+    }
+
+    public function element(PHPUnit_Extensions_Selenium2TestCase_ElementCriteria $criteria)
+    {
+        $session = $this->prepareSession();
+        $value = $session->postCommand('element', $criteria);
+        return PHPUnit_Extensions_AppiumTestCase_Element::fromResponseValue(
+                $value, $session->getSessionUrl()->descend('element'), $session->getDriver());
+    }
+
+    public function elements(PHPUnit_Extensions_Selenium2TestCase_ElementCriteria $criteria)
+    {
+        $session = $this->prepareSession();
+        $values = $session->postCommand('elements', $criteria);
+        $elements = array();
+        foreach ($values as $value) {
+            $elements[] =
+                PHPUnit_Extensions_AppiumTestCase_Element::fromResponseValue(
+                    $value, $session->getSessionUrl()->descend('element'), $session->driver);
+        }
+        return $elements;
+    }
+
+    /**
+     * @param string $value     e.g. 'container'
+     * @return PHPUnit_Extensions_Selenium2TestCase_Element
+     */
+    public function byClassName($value)
+    {
+        return $this->by('class name', $value);
+    }
+
+    /**
+     * @param string $value     e.g. 'div.container'
+     * @return PHPUnit_Extensions_Selenium2TestCase_Element
+     */
+    public function byCssSelector($value)
+    {
+        return $this->by('css selector', $value);
+    }
+
+    /**
+     * @param string $value     e.g. 'uniqueId'
+     * @return PHPUnit_Extensions_Selenium2TestCase_Element
+     */
+    public function byId($value)
+    {
+        return $this->by('id', $value);
+    }
+
+    /**
+     * @param string $value     e.g. 'Link text'
+     * @return PHPUnit_Extensions_Selenium2TestCase_Element
+     */
+    public function byLinkText($value)
+    {
+        return $this->by('link text', $value);
+    }
+
+    /**
+     * @param string $value     e.g. 'Link te'
+     * @return PHPUnit_Extensions_Selenium2TestCase_Element
+     */
+    public function byPartialLinkText($value)
+    {
+        return $this->by('partial link text', $value);
+    }
+
+    /**
+     * @param string $value     e.g. 'email_address'
+     * @return PHPUnit_Extensions_Selenium2TestCase_Element
+     */
+    public function byName($value)
+    {
+        return $this->by('name', $value);
+    }
+
+    /**
+     * @param string $value     e.g. 'body'
+     * @return PHPUnit_Extensions_Selenium2TestCase_Element
+     */
+    public function byTag($value)
+    {
+        return $this->by('tag name', $value);
+    }
+
+    /**
+     * @param string $value     e.g. '/div[@attribute="value"]'
+     * @return PHPUnit_Extensions_Selenium2TestCase_Element
+     */
+    public function byXPath($value)
+    {
+        return $this->by('xpath', $value);
     }
 }

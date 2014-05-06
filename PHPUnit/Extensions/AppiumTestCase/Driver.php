@@ -24,11 +24,14 @@ class PHPUnit_Extensions_AppiumTestCase_Driver
 
     public function __construct(PHPUnit_Extensions_Selenium2TestCase_URL $seleniumServerUrl, $timeout = 60)
     {
+        parent::__construct($seleniumServerUrl, $timeout);
+
         $this->seleniumServerUrl = $seleniumServerUrl;
         $this->seleniumServerRequestsTimeout = $timeout;
     }
 
-    public function startSession(array $desiredCapabilities, PHPUnit_Extensions_Selenium2TestCase_URL $browserUrl)
+    public function startSession(array $desiredCapabilities,
+                                 PHPUnit_Extensions_Selenium2TestCase_URL $browserUrl)
     {
         $sessionCreation = $this->seleniumServerUrl->descend("/wd/hub/session");
         $response = $this->curl('POST', $sessionCreation, array(
