@@ -13,12 +13,31 @@ class ContextTests extends PHPUnit_Extensions_AppiumTestCase
     {
         $el = $this->byAndroidUIAutomator('new UiSelector().description("Animation")');
         $this->assertNotNull($el);
+        $this->assertEquals('PHPUnit_Extensions_AppiumTestCase_Element', get_class($el));
+    }
+
+    public function testElementFindByAndroidUIAutomator()
+    {
+        sleep(1);
+        $el = $this->byClassName('android.widget.ListView');
+        $sub_el = $el->byAndroidUIAutomator('new UiSelector().description("Animation")');
+        $this->assertEquals('Animation', $sub_el->text());
+        $this->assertEquals('PHPUnit_Extensions_AppiumTestCase_Element', get_class($sub_el));
     }
 
     public function testFindByAccessibilityId()
     {
         $el = $this->byAccessibilityId('Animation');
         $this->assertNotNull($el);
+        $this->assertEquals('PHPUnit_Extensions_AppiumTestCase_Element', get_class($el));
+    }
+
+    public function testElementFindByAccessibilityId()
+    {
+        $el = $this->byClassName('android.widget.ListView');
+        $sub_el = $el->byAccessibilityId('Animation');
+        $this->assertEquals('Animation', $sub_el->text());
+        $this->assertEquals('PHPUnit_Extensions_AppiumTestCase_Element', get_class($sub_el));
     }
 
     public static $browsers = array(
