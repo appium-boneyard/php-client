@@ -51,4 +51,9 @@ class PHPUnit_Extensions_AppiumTestCase_Driver
             $timeouts
         );
     }
+
+    public function getServerUrl()
+    {
+        return $this->seleniumServerUrl;
+    }
 }
