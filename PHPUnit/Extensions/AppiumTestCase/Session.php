@@ -40,7 +40,6 @@ class PHPUnit_Extensions_AppiumTestCase_Session
      */
     public function elementFromResponseValue($value)
     {
-        echo "here";
         return PHPUnit_Extensions_Selenium2TestCase_Element::fromResponseValue($value, $this->getSessionUrl()->descend('element'), $this->driver);
     }
 
@@ -50,10 +49,14 @@ class PHPUnit_Extensions_AppiumTestCase_Session
         $this->driver->curl('POST', $url);
     }
 
-    public function appStrings()
+    public function appStrings($language=NULL)
     {
         $url = $this->getSessionUrl()->addCommand('appium/app/strings');
-        return $this->driver->curl('GET', $url)->getValue();
+        $data = array();
+        if (!is_null($language)) {
+            $data['language'] = $language;
+        }
+        return $this->driver->curl('POST', $url, $data)->getValue();
     }
 
     public function keyEvent($keycode, $metastate=null)

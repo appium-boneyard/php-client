@@ -26,6 +26,12 @@ class AppiumTests extends PHPUnit_Extensions_AppiumTestCase
         $this->assertEquals('You can\'t wipe my data, you are a monkey!', $strings['monkey_wipe_data']);
     }
 
+    public function testAppStringsNonDefault()
+    {
+        $strings = $this->appStrings("en");
+        $this->assertEquals('You can\'t wipe my data, you are a monkey!', $strings['monkey_wipe_data']);
+    }
+
     public function testKeyEvent()
     {
         $this->byAccessibilityId('App')->click();
