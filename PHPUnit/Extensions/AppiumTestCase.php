@@ -16,6 +16,7 @@
 
 require_once('PHPUnit/Extensions/AppiumTestCase/SessionStrategy/Isolated.php');
 require_once('PHPUnit/Extensions/AppiumTestCase/Element.php');
+require_once('PHPUnit/Extensions/AppiumTestCase/TouchAction.php');
 
 
 abstract class PHPUnit_Extensions_AppiumTestCase extends PHPUnit_Extensions_Selenium2TestCase
@@ -253,6 +254,43 @@ abstract class PHPUnit_Extensions_AppiumTestCase extends PHPUnit_Extensions_Sele
             $session->getSessionUrl()->descend('element'), $session->getDriver());
     }
 
+    public function initiateTouchAction()
+    {
+        $session = $this->prepareSession();
+        return new PHPUnit_Extensions_AppiumTestCase_TouchAction($session->getSessionUrl(), $session->getDriver());
+    }
+
+    public function scroll($originElement, $destinationElement)
+    {
+        $action = $this->initiateTouchAction();
+        $action->press(array('element' => $originElement))
+               ->moveTo(array('element' => $destinationElement))
+               ->release()
+               ->perform();
+        return $this;
+    }
+
+    public function dragAndDrop($originElement, $destinationElement)
+    {
+        $action = $this->initiateTouchAction();
+        $action->longPress(array('element' => $originElement))
+               ->moveTo(array('element' => $destinationElement))
+               ->release()
+               ->perform();
+        return $this;
+    }
+
+    public function swipe($startX, $startY, $endX, $endY, $duration=800)
+    {
+        $action = $this->initiateTouchAction();
+        $action->press(array('x' => $startX, 'y' => $startY))
+               ->wait($duration)
+               ->moveTo(array('x' => $endX, 'y' => $endY))
+               ->release()
+               ->perform();
+        return $this;
+    }
+
     // stolen from PHPUnit_Extensions_Selenium2TestCase_Element_Accessor
     // where it is mysteriously private, and therefore unusable
     public function by($strategy, $value)
@@ -277,7 +315,7 @@ abstract class PHPUnit_Extensions_AppiumTestCase extends PHPUnit_Extensions_Sele
         foreach ($values as $value) {
             $elements[] =
                 PHPUnit_Extensions_AppiumTestCase_Element::fromResponseValue(
-                    $value, $session->getSessionUrl()->descend('element'), $session->driver);
+                    $value, $session->getSessionUrl()->descend('element'), $session->getDriver());
         }
         return $elements;
     }
