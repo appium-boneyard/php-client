@@ -16,6 +16,7 @@
 
 require_once('PHPUnit/Extensions/AppiumTestCase/SessionStrategy/Isolated.php');
 require_once('PHPUnit/Extensions/AppiumTestCase/Element.php');
+require_once('PHPUnit/Extensions/AppiumTestCase/MultiAction.php');
 require_once('PHPUnit/Extensions/AppiumTestCase/TouchAction.php');
 
 
@@ -235,7 +236,6 @@ abstract class PHPUnit_Extensions_AppiumTestCase extends PHPUnit_Extensions_Sele
         if ($keyName != null) {
             $data['keyName'] = $keyName;
         }
-        var_dump($data);
         $session = $this->prepareSession();
         $url = $this->getSessionUrl()->descend('appium')->descend('device')->descend('hide_keyboard');
         $session->getDriver()->curl('POST', $url, $data);
@@ -289,6 +289,90 @@ abstract class PHPUnit_Extensions_AppiumTestCase extends PHPUnit_Extensions_Sele
                ->release()
                ->perform();
         return $this;
+    }
+
+    public function initiateMultiAction()
+    {
+        $session = $this->prepareSession();
+        return new PHPUnit_Extensions_AppiumTestCase_MultiAction($session->getSessionUrl(), $session->getDriver());
+    }
+
+    public function tap($fingers, $x, $y=NULL, $duration=0)
+    {
+        $multiAction = $this->initiateMultiAction();
+
+        // php doesn't support overloading, so we need to do some twiddling
+        if (gettype($x) != 'integer') {
+            $element = $x;
+            if (!is_null($y)) {
+                echo "setting duration to";
+                $duration = $y;
+            }
+
+            for ($i = 0; $i < $fingers; $i++) {
+                $action = $this->initiateTouchAction();
+                $action->press(array('element' => $element))
+                       ->wait($duration)
+                       ->release();
+                $multiAction->add($action);
+            }
+        } else {
+            for ($i = 0; $i < $fingers; $i++) {
+                $action = $this->initiateTouchAction();
+                $action->press(array('x' => $x, 'y' => $y))
+                       ->wait($duration)
+                       ->release();
+                $multiAction->add($action);
+            }
+        }
+
+        $multiAction->perform();
+    }
+
+    public function pinch(PHPUnit_Extensions_AppiumTestCase_Element $element)
+    {
+        $center = $this->elementCenter($element);
+
+        $centerX = $center['x'];
+        $centerY = $center['y'];
+
+        $a1 = $this->initiateTouchAction();
+        $a1->press(array('x' => $centerX, 'y' => $centerY - 100))
+           ->moveTo(array('x' => $centerX, 'y' => $centerY))
+           ->release();
+
+        $a2 = $this->initiateTouchAction();
+        $a2->press(array('x' => $centerX, 'y' => $centerY + 100))
+           ->moveTo(array('x' => $centerX, 'y' => $centerY))
+           ->release();
+
+        $ma = $this->initiateMultiAction();
+        $ma->add($a1);
+        $ma->add($a2);
+        $ma->perform();
+    }
+
+    public function zoom(PHPUnit_Extensions_AppiumTestCase_Element $element)
+    {
+        $center = $this->elementCenter($element);
+
+        $centerX = $center['x'];
+        $centerY = $center['y'];
+
+        $a1 = $this->initiateTouchAction();
+        $a1->press(array('x' => $centerX, 'y' => $centerY))
+           ->moveTo(array('x' => $centerX, 'y' => $centerY - 100))
+           ->release();
+
+        $a2 = $this->initiateTouchAction();
+        $a2->press(array('x' => $centerX, 'y' => $centerY))
+           ->moveTo(array('x' => $centerX, 'y' => $centerY + 100))
+           ->release();
+
+        $ma = $this->initiateMultiAction();
+        $ma->add($a1);
+        $ma->add($a2);
+        $ma->perform();
     }
 
     // stolen from PHPUnit_Extensions_Selenium2TestCase_Element_Accessor
@@ -390,5 +474,16 @@ abstract class PHPUnit_Extensions_AppiumTestCase extends PHPUnit_Extensions_Sele
     public function byXPath($value)
     {
         return $this->by('xpath', $value);
+    }
+
+    protected function elementCenter(PHPUnit_Extensions_AppiumTestCase_Element $element)
+    {
+        $size = $element->size();
+        $location = $element->location();
+
+        $centerX = $location['x'] + $size['width'] / 2;
+        $centerY = $location['y'] + $size['height'] / 2;
+
+        return array('x' => $centerX, 'y' => $centerY);
     }
 }

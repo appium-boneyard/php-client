@@ -23,7 +23,7 @@ require_once('PHPUnit/Extensions/AppiumTestCase.php');
 
 define("SLEEPY_TIME", 2);
 
-class AppiumTests extends PHPUnit_Extensions_AppiumTestCase
+class TouchActionTests extends PHPUnit_Extensions_AppiumTestCase
 {
     public static $browsers = array(
         array(

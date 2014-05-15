@@ -109,6 +109,15 @@ class PHPUnit_Extensions_AppiumTestCase_TouchAction
         $this->driver->curl('POST', $url, $params);
     }
 
+    public function getJSONWireGestures()
+    {
+        $actions = array();
+        foreach ($this->actions as $action) {
+            $actions[] = $action;
+        }
+        return $actions;
+    }
+
 
     protected function getOptions($params) {
         $opts = array();
