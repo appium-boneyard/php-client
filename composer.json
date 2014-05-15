@@ -1,5 +1,5 @@
 {
-  "name": "appium/appium-php",
+  "name": "appium/php-client",
   "type": "appium-php",
   "description": "PHP client for Selenium 3.0/Appium 1.0",
   "keywords": ["appium", "phpunit", "selenium"],
