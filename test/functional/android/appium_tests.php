@@ -87,7 +87,7 @@ class AppiumTests extends PHPUnit_Extensions_AppiumTestCase
         $this->assertTrue($this->isAppInstalled('com.example.android.apis'));
     }
 
-    this fails for some reason
+    // this fails for some reason
     public function testInstallApp()
     {
         $this->assertFalse($this->isAppInstalled('io.selendroid.testapp'));
