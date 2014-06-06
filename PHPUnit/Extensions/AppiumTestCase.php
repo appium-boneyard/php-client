@@ -254,6 +254,13 @@ abstract class PHPUnit_Extensions_AppiumTestCase extends PHPUnit_Extensions_Sele
             $session->getSessionUrl()->descend('element'), $session->getDriver());
     }
 
+    public function openNotifications()
+    {
+        $session = $this->prepareSession();
+        $url = $this->getSessionUrl()->descend('appium')->descend('device')->descend('open_notifications');
+        $session->getDriver()->curl('POST', $url, array());
+    }
+
     public function initiateTouchAction()
     {
         $session = $this->prepareSession();
