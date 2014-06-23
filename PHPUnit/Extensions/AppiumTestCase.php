@@ -143,6 +143,17 @@ abstract class PHPUnit_Extensions_AppiumTestCase extends PHPUnit_Extensions_Sele
         $session->getDriver()->curl('POST', $url, $data);
     }
 
+    public function pullFolder($path)
+    {
+        $session = $this->prepareSession();
+        $data = array(
+            'path' => $path
+        );
+        $url = $this->getSessionUrl()->descend('appium')->descend('device')->descend('pull_folder');
+        $response = $session->getDriver()->curl('POST', $url, $data);
+        return $response->getValue();
+    }
+
     public function backgroundApp($seconds)
     {
         $session = $this->prepareSession();

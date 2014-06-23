@@ -65,6 +65,29 @@ class AppiumTests extends PHPUnit_Extensions_AppiumTestCase
         $this->assertEquals($data, $data_ret);
     }
 
+    public function testPullFolder()
+    {
+        $data = 'random string data ' . rand(0, 1000);
+        $path = '/data/local/tmp';
+        $this->pushFile($path . '/1.txt', base64_encode($data));
+        $this->pushFile($path . '/2.txt', base64_encode($data));
+
+        $folder = base64_decode($this->pullFolder($path));
+
+        $zipFile = '_folder.zip';
+        $fp = fopen($zipFile, 'w');
+        fwrite($fp, $folder);
+        fclose($fp);
+
+        $zip = new ZipArchive();
+        $this->assertEquals(true, $zip->open($zipFile));
+        $this->assertNotEquals(false, $zip->getFromName('1.txt'));
+        $this->assertNotEquals(false, $zip->getFromName('2.txt'));
+        $zip->close();
+
+        unlink($zipFile);
+    }
+
     public function testBackgroundApp()
     {
         $this->backgroundApp(1);
@@ -163,6 +186,8 @@ class AppiumTests extends PHPUnit_Extensions_AppiumTestCase
             'port' => 4723,
             'browserName' => '',
             'desiredCapabilities' => array(
+                'deviceName' => 'Android Emulator',
+                'platformName' => 'Android',
                 'app' => APP_PATH
             )
         )
