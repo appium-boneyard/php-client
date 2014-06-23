@@ -49,7 +49,28 @@ class AppiumTests extends PHPUnit_Extensions_AppiumTestCase
         $keyboard = $this->byClassName('UIAKeyboard');
         $this->assertTrue($keyboard->displayed());
 
-        $this->hideKeyboard('Done');
+        $this->hideKeyboard(array(
+            'keyName' => 'Done'
+        ));
+
+        $this->assertFalse($keyboard->displayed());
+    }
+
+    public function testHideKeyboardPressKeyStrategy()
+    {
+        $this->byName('TextFields, Uses of UITextField')->click();
+
+        # get focus on text field, so keyboard comes up
+        $el = $this->byClassName('UIATextField');
+        $el->value('Testing');
+
+        $keyboard = $this->byClassName('UIAKeyboard');
+        $this->assertTrue($keyboard->displayed());
+
+        $this->hideKeyboard(array(
+            'strategy' => 'pressKey',
+            'key' => 'Done'
+        ));
 
         $this->assertFalse($keyboard->displayed());
     }
@@ -77,6 +98,8 @@ class AppiumTests extends PHPUnit_Extensions_AppiumTestCase
             'port' => 4723,
             'browserName' => '',
             'desiredCapabilities' => array(
+                'deviceName' => 'iPhone Simulator',
+                'platformName' => 'iOS',
                 'app' => APP_PATH
             )
         )

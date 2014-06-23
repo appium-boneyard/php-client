@@ -241,11 +241,16 @@ abstract class PHPUnit_Extensions_AppiumTestCase extends PHPUnit_Extensions_Sele
         $session->getDriver()->curl('POST', $url, null);
     }
 
-    public function hideKeyboard($keyName=null)
+    public function hideKeyboard($args=array('strategy' => 'tapOutside'))
     {
         $data = array();
-        if ($keyName != null) {
-            $data['keyName'] = $keyName;
+        if (array_key_exists('keyName', $args)) {
+            $data['keyName'] = $args['keyName'];
+        } elseif (array_key_exists('key', $args)) {
+            $data['key'] = $args['key'];
+        }
+        if (array_key_exists('strategy', $args)) {
+            $data['strategy'] = $args['strategy'];
         }
         $session = $this->prepareSession();
         $url = $this->getSessionUrl()->descend('appium')->descend('device')->descend('hide_keyboard');
