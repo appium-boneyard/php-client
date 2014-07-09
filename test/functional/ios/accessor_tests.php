@@ -22,7 +22,10 @@ class AccessorTests extends PHPUnit_Extensions_AppiumTestCase
             'port' => 4723,
             'browserName' => '',
             'desiredCapabilities' => array(
-                'app' => APP_PATH
+                'app' => APP_PATH,
+                'platformName' => 'iOS',
+                'platformVersion' => '7.1',
+                'deviceName' => 'iPhone Simulator'
             )
         )
     );

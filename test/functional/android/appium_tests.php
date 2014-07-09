@@ -186,9 +186,10 @@ class AppiumTests extends PHPUnit_Extensions_AppiumTestCase
             'port' => 4723,
             'browserName' => '',
             'desiredCapabilities' => array(
-                'deviceName' => 'Android Emulator',
+                'app' => APP_PATH,
                 'platformName' => 'Android',
-                'app' => APP_PATH
+                'platformVersion' => '4.4',
+                'deviceName' => 'Android Emulator'
             )
         )
     );

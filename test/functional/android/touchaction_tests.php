@@ -31,7 +31,10 @@ class TouchActionTests extends PHPUnit_Extensions_AppiumTestCase
             'port' => 4723,
             'browserName' => '',
             'desiredCapabilities' => array(
-                'app' => APP_PATH
+                'app' => APP_PATH,
+                'platformName' => 'Android',
+                'platformVersion' => '4.4',
+                'deviceName' => 'Android Emulator'
             )
         )
     );
