@@ -98,9 +98,10 @@ class AppiumTests extends PHPUnit_Extensions_AppiumTestCase
             'port' => 4723,
             'browserName' => '',
             'desiredCapabilities' => array(
-                'deviceName' => 'iPhone Simulator',
+                'app' => APP_PATH,
                 'platformName' => 'iOS',
-                'app' => APP_PATH
+                'platformVersion' => '7.1',
+                'deviceName' => 'iPhone Simulator'
             )
         )
     );
