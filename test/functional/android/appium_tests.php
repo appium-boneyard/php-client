@@ -180,6 +180,20 @@ class AppiumTests extends PHPUnit_Extensions_AppiumTestCase
         $this->byAndroidUIAutomator('new UiSelector().text(":-|")');
     }
 
+    public function testSetText()
+    {
+        $this->byAndroidUIAutomator('new UiScrollable(new UiSelector().scrollable(true).instance(0)).scrollIntoView(new UiSelector().text("Views").instance(0));')->click();
+        $this->byName('Controls')->click();
+        $this->byName('1. Light Theme')->click();
+
+        $el = $this->byClassName('android.widget.EditText');
+        $el->setText('original text');
+        $el->setText('new text');
+
+        $this->assertEquals('new text', $el->text());
+    }
+
+
     public static $browsers = array(
         array(
             'local' => true,

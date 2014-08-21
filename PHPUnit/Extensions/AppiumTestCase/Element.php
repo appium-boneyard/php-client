@@ -58,6 +58,16 @@ class PHPUnit_Extensions_AppiumTestCase_Element
         $this->driver->curl('POST', $url, $data);
     }
 
+    public function setText($keys)
+    {
+        $data = array(
+            'elementId' => $this->getId(),
+            'value' => array($keys)
+        );
+        $url = $this->getSessionUrl()->descend('appium')->descend('element')->descend($this->getId())->descend('replace_value');
+        $this->driver->curl('POST', $url, $data);
+    }
+
     public function by($strategy, $value)
     {
         $el = $this->element($this->using($strategy)->value($value));
