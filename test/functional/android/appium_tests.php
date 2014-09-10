@@ -126,6 +126,24 @@ class AppiumTests extends PHPUnit_Extensions_AppiumTestCase
         $this->assertFalse($this->isAppInstalled('com.example.android.apis'));
     }
 
+    public function testStartActivityInThisApp()
+    {
+        $this->startActivity(array('appPackage' => "io.appium.android.apis",
+                                   'appActivity' => ".accessibility.AccessibilityNodeProviderActivity"));
+
+        $activity = $this->currentActivity();
+        $this->assertTrue(strpos($activity, 'Node') !== FALSE);
+    }
+
+    public function testStartActivityInNewApp()
+    {
+        $this->startActivity(array('appPackage' => "com.android.contacts",
+                                   'appActivity' => ".ContactsListActivity"));
+
+        $activity = $this->currentActivity();
+        $this->assertTrue(strpos($activity, 'Contact') !== FALSE);
+    }
+
     public function testCloseAndLaunchApp()
     {
         $el = $this->byName('Animation');
@@ -192,7 +210,6 @@ class AppiumTests extends PHPUnit_Extensions_AppiumTestCase
 
         $this->assertEquals('new text', $el->text());
     }
-
 
     public static $browsers = array(
         array(

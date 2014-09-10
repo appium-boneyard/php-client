@@ -88,6 +88,7 @@ class MySuperTests extends PHPUnit_Extensions_AppiumTestCase
 * `tap`
 * `pinch`
 * `zoom`
+* `startActivity`
 
 ### Methods in `PHPUnit_Extensions_AppiumTestCase_Element`
 

@@ -211,6 +211,18 @@ abstract class PHPUnit_Extensions_AppiumTestCase extends PHPUnit_Extensions_Sele
         $url = $this->getSessionUrl()->descend('appium')->descend('app')->descend('close');
         $session->getDriver()->curl('POST', $url, null);
     }
+    
+    /**
+     * @param array $options     'appPackage' and 'appActivity' are required;
+     *                           'appWaitPackage' and 'appWaitActivity' are optional
+     * @return void
+     */
+    public function startActivity($options)
+    {
+        $session = $this->prepareSession();
+        $url = $this->getSessionUrl()->descend('appium')->descend('device')->descend('start_activity');
+        $session->getDriver()->curl('POST', $url, $options);
+    }
 
     public function endTestCoverage($intent, $path)
     {
