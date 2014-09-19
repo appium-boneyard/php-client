@@ -157,12 +157,6 @@ class AppiumTests extends PHPUnit_Extensions_AppiumTestCase
         $this->assertNotNull($el);
     }
 
-    public function testComplexFind()
-    {
-        $el = $this->complexFind([[[2, 'Ani']]]);
-        $this->assertEquals('Animation', $el->text());
-    }
-
     public function testOpenNotifications()
     {
         $this->byAndroidUIAutomator('new UiSelector().text("App")')->click();
@@ -209,6 +203,21 @@ class AppiumTests extends PHPUnit_Extensions_AppiumTestCase
         $el->setText('new text');
 
         $this->assertEquals('new text', $el->text());
+    }
+
+    public function testGetSettings()
+    {
+        $settings = $this->getSettings();
+
+        $this->assertNotNull($settings);
+    }
+
+    public function testUpdateSettings()
+    {
+        $this->updateSettings(array('cyberdelia' => "open"));
+        $settings = $this->getSettings();
+
+        $this->assertEquals('open', $settings['cyberdelia']);
     }
 
     public static $browsers = array(
