@@ -211,7 +211,7 @@ abstract class PHPUnit_Extensions_AppiumTestCase extends PHPUnit_Extensions_Sele
         $url = $this->getSessionUrl()->descend('appium')->descend('app')->descend('close');
         $session->getDriver()->curl('POST', $url, null);
     }
-    
+
     /**
      * @param array $options     'appPackage' and 'appActivity' are required;
      *                           'appWaitPackage' and 'appWaitActivity' are optional
@@ -267,19 +267,6 @@ abstract class PHPUnit_Extensions_AppiumTestCase extends PHPUnit_Extensions_Sele
         $session = $this->prepareSession();
         $url = $this->getSessionUrl()->descend('appium')->descend('device')->descend('hide_keyboard');
         $session->getDriver()->curl('POST', $url, $data);
-    }
-
-    public function complexFind($selector)
-    {
-        // /appium/app/complex_find
-        $session = $this->prepareSession();
-        $data = array(
-            'selector' => $selector
-        );
-        $url = $this->getSessionUrl()->descend('appium')->descend('app')->descend('complex_find');
-        $response = $session->getDriver()->curl('POST', $url, $data);
-        return PHPUnit_Extensions_AppiumTestCase_Element::fromResponseValue($response->getValue(),
-            $session->getSessionUrl()->descend('element'), $session->getDriver());
     }
 
     public function openNotifications()
@@ -408,6 +395,28 @@ abstract class PHPUnit_Extensions_AppiumTestCase extends PHPUnit_Extensions_Sele
         $ma->add($a1);
         $ma->add($a2);
         $ma->perform();
+    }
+
+    // Get session Settings
+    public function getSettings()
+    {
+      // /appium/settings
+      $session = $this->prepareSession();
+      $url = $this->getSessionUrl()->descend('appium')->descend('settings');
+      $response = $session->getDriver()->curl('GET', $url);
+      return $response->getValue();
+    }
+
+    // Set session Settings
+    public function updateSettings($settings)
+    {
+      // /appium/settings
+      $session = $this->prepareSession();
+      $data = array(
+          'settings' => $settings
+      );
+      $url = $this->getSessionUrl()->descend('appium')->descend('settings');
+      $session->getDriver()->curl('POST', $url, $data);
     }
 
     // stolen from PHPUnit_Extensions_Selenium2TestCase_Element_Accessor

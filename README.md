@@ -79,7 +79,6 @@ class MySuperTests extends PHPUnit_Extensions_AppiumTestCase
 * `lock`
 * `shake`
 * `hideKeyboard`
-* `complexFind`
 * `initiateTouchAction`
 * `initiateMultiAction`
 * `scroll`
@@ -89,6 +88,8 @@ class MySuperTests extends PHPUnit_Extensions_AppiumTestCase
 * `pinch`
 * `zoom`
 * `startActivity`
+* `getSettings`
+* `setSettings`
 
 ### Methods in `PHPUnit_Extensions_AppiumTestCase_Element`
 
