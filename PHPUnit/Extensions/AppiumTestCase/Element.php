@@ -84,13 +84,12 @@ class PHPUnit_Extensions_AppiumTestCase_Element
 
     public function elements(PHPUnit_Extensions_Selenium2TestCase_ElementCriteria $criteria)
     {
-        $session = $this->prepareSession();
-        $values = $session->postCommand('elements', $criteria);
+        $values = $this->postCommand('elements', $criteria);
         $elements = array();
         foreach ($values as $value) {
             $elements[] =
                 PHPUnit_Extensions_AppiumTestCase_Element::fromResponseValue(
-                    $value, $session->getSessionUrl()->descend('element'), $session->driver);
+                    $value, $this->getSessionUrl()->descend('element'), $this->driver);
         }
         return $elements;
     }
