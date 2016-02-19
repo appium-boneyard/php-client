@@ -92,6 +92,11 @@ class AppiumTests extends PHPUnit_Extensions_AppiumTestCase
         $this->assertFalse($keyboard->displayed());
     }
 
+    public function testGetDeviceTime()
+    {
+        $this->getDeviceTime();
+    }
+
     public static $browsers = array(
         array(
             'local' => true,
