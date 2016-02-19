@@ -253,6 +253,14 @@ abstract class PHPUnit_Extensions_AppiumTestCase extends PHPUnit_Extensions_Sele
         $session->getDriver()->curl('POST', $url, null);
     }
 
+    public function getDeviceTime()
+    {
+        $session = $this->prepareSession();
+        $url = $this->getSessionUrl()->descend('appium')->descend('device')->descend('system_time');
+        $response = $session->getDriver()->curl('GET', $url);
+        return $response->getValue();
+    }
+
     public function hideKeyboard($args=array('strategy' => 'tapOutside'))
     {
         $data = array();
