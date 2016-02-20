@@ -78,6 +78,7 @@ class MySuperTests extends PHPUnit_Extensions_AppiumTestCase
 * `endTestCoverage`
 * `lock`
 * `shake`
+* `getDeviceTime`
 * `hideKeyboard`
 * `initiateTouchAction`
 * `initiateMultiAction`
