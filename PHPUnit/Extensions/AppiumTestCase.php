@@ -253,6 +253,16 @@ abstract class PHPUnit_Extensions_AppiumTestCase extends PHPUnit_Extensions_Sele
         $session->getDriver()->curl('POST', $url, null);
     }
 
+    public function touchId($match)
+    {
+        $session = $this->prepareSession();
+        $data = array(
+            'match' => $match
+        );
+        $url = $this->getSessionUrl()->descend('appium')->descend('simulator')->descend('touch_id');
+        $session->getDriver()->curl('POST', $url, $data);
+    }
+
     public function getDeviceTime()
     {
         $session = $this->prepareSession();
