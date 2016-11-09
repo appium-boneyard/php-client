@@ -11,8 +11,8 @@ class AppiumTests extends PHPUnit_Extensions_AppiumTestCase
 {
     public function testSetImmediateValue()
     {
-        $this->byAccessibilityId('TextFields, Uses of UITextField')->click();
-        $el = $this->byClassName('UIATextField');
+        $this->byAccessibilityId('Uses of UITextField')->click();
+        $el = $this->byClassName('XCUIElementTypeTextField');
         $el->click();
 
         $el->setImmediateValue('Testing');
@@ -38,9 +38,15 @@ class AppiumTests extends PHPUnit_Extensions_AppiumTestCase
         $this->shake();
     }
 
+    public function testTouchId()
+    {
+        $this->touchId(true);
+        $this->touchId(false);
+    }
+
     public function testHideKeyboard()
     {
-        $this->byName('TextFields, Uses of UITextField')->click();
+        $this->byName('Uses of UITextField')->click();
 
         # get focus on text field, so keyboard comes up
         $el = $this->byClassName('UIATextField');
@@ -77,13 +83,13 @@ class AppiumTests extends PHPUnit_Extensions_AppiumTestCase
 
     public function testHideKeyboardNoKeyname()
     {
-        $this->byName('TextFields, Uses of UITextField')->click();
+        $this->byName('Uses of UITextField')->click();
 
         # get focus on text field, so keyboard comes up
-        $el = $this->byClassName('UIATextField');
+        $el = $this->byClassName('XCUIElementTypeTextField');
         $el->value('Testing');
 
-        $keyboard = $this->byClassName('UIAKeyboard');
+        $keyboard = $this->byClassName('XCUIElementTypeKeyboard');
         $this->assertTrue($keyboard->displayed());
 
         $this->hideKeyboard();
@@ -91,6 +97,7 @@ class AppiumTests extends PHPUnit_Extensions_AppiumTestCase
         // currently fails
         $this->assertFalse($keyboard->displayed());
     }
+
 
     public function testGetDeviceTime()
     {
@@ -105,7 +112,7 @@ class AppiumTests extends PHPUnit_Extensions_AppiumTestCase
             'desiredCapabilities' => array(
                 'app' => APP_PATH,
                 'platformName' => 'iOS',
-                'platformVersion' => '7.1',
+                'platformVersion' => '10.1',
                 'deviceName' => 'iPhone Simulator'
             )
         )
