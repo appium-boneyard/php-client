@@ -339,10 +339,10 @@ abstract class PHPUnit_Extensions_AppiumTestCase extends PHPUnit_Extensions_Sele
 
     public function tap($fingers, $x, $y=NULL, $duration=0)
     {
-        $multiAction = $this->initiateMultiAction();
 
         // php doesn't support overloading, so we need to do some twiddling
         if (gettype($x) != 'integer') {
+            $multiAction = $this->initiateMultiAction();
             $element = $x;
             if (!is_null($y)) {
                 echo "setting duration to";
@@ -356,17 +356,17 @@ abstract class PHPUnit_Extensions_AppiumTestCase extends PHPUnit_Extensions_Sele
                        ->release();
                 $multiAction->add($action);
             }
+            $multiAction->perform();
         } else {
             for ($i = 0; $i < $fingers; $i++) {
                 $action = $this->initiateTouchAction();
                 $action->press(array('x' => $x, 'y' => $y))
                        ->wait($duration)
                        ->release();
-                $multiAction->add($action);
+                $action->perform();
             }
         }
 
-        $multiAction->perform();
     }
 
     public function pinch(PHPUnit_Extensions_AppiumTestCase_Element $element)
