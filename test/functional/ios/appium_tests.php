@@ -44,6 +44,10 @@ class AppiumTests extends PHPUnit_Extensions_AppiumTestCase
         $this->touchId(false);
     }
 
+    public function testToggleTouchIdEnrollment() {
+        $this->toggleTouchIdEnrollment();
+    }
+
     public function testHideKeyboard()
     {
         $this->byName('Uses of UITextField')->click();
@@ -112,8 +116,9 @@ class AppiumTests extends PHPUnit_Extensions_AppiumTestCase
             'desiredCapabilities' => array(
                 'app' => APP_PATH,
                 'platformName' => 'iOS',
-                'platformVersion' => '10.1',
-                'deviceName' => 'iPhone Simulator'
+                'platformVersion' => '10.2',
+                'deviceName' => 'iPhone Simulator',
+                'allowTouchIdEnroll' => True
             )
         )
     );
