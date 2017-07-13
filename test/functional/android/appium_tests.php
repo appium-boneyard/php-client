@@ -48,6 +48,12 @@ class AppiumTests extends PHPUnit_Extensions_AppiumTestCase
         $this->assertEquals(".ApiDemos", $activity);
     }
 
+    public function testCurrentPackage() 
+    {
+        $package = $this->currentPackage();
+        $this->assertEquals('com.example.android.apis', $package);
+    }
+
     public function testPullFile()
     {
         $data = $this->pullFile('data/local/tmp/strings.json');

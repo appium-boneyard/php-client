@@ -20,12 +20,14 @@ The library is installable using the [Composer](https://getcomposer.org/) depend
 }
 ```
 
-Then install the dependencies and run your tests:
+Have an instance of Appium running in the background at port 4723. Then install the dependencies and run your tests:
 
 ```shell
 composer install
 vendor/phpunit/phpunit/phpunit <mytest.php>
 ```
+
+For more details about your tests add the `--verbose` flag to phpunit
 
 ## Usage and changes
 
