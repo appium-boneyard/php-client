@@ -75,6 +75,12 @@ class PHPUnit_Extensions_AppiumTestCase_Session
         return $this->driver->curl('GET', $url)->getValue();
     }
 
+    public function currentPackage() 
+    {
+        $url = $this->getSessionUrl()->addCommand('appium/device/current_package');
+        return $this->driver->curl('GET', $url)->getValue();
+    }
+
     protected function initCommands()
     {
         $baseUrl = $this->baseUrl;
