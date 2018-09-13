@@ -21,7 +21,7 @@ class PHPUnit_Extensions_AppiumTestCase_SessionStrategy_Isolated
 {
     public function session(array $parameters)
     {
-        $seleniumServerUrl = PHPUnit_Extensions_Selenium2TestCase_URL::fromHostAndPort($parameters['host'], $parameters['port'], $parameters['secure']);
+        $seleniumServerUrl = PHPUnit_Extensions_Selenium2TestCase_URL::fromHostAndPort($parameters['host'], $parameters['port']);
         $driver = new PHPUnit_Extensions_AppiumTestCase_Driver($seleniumServerUrl, $parameters['seleniumServerRequestsTimeout']);
         $capabilities = array_merge($parameters['desiredCapabilities'],
                                     array(
